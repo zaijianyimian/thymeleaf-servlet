@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生信息管理平台</title>
+    <!-- 引入 Bootstrap 样式 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> <!-- 你可以在此处链接自定义样式 -->
+</head>
+
+<body>
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- 校徽 -->
+        <img src="https://th.bing.com/th/id/R.2e9bf3620973f9add737f24ee9749337?rik=RX%2bK4g2RRUznTw&riu=http%3a%2f%2fwww.xuexili.com%2fuploads%2fallimg%2f2304%2f15215B523-2.jpg&ehk=%2b6OKRnJprE%2btGIm2G07eic8kcfQngFyZHNeD2XAVeBk%3d&risl=&pid=ImgRaw&r=0" alt="校徽" style="width: 50px; height: 50px;" class="d-inline-block me-3">
+        <a class="navbar-brand" href="#">学生信息管理平台</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" th:href="@{/}">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{/students}">学生列表</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{/students?action=new}">添加学生</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{/students?action=search}">查询学生</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">注销</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 主体部分 -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- 欢迎信息 -->
+            <div class="alert alert-info" role="alert">
+                欢迎使用学生信息管理平台！请选择一个操作进行管理。
+            </div>
+
+            <!-- 查询表单 -->
+            <form class="d-flex mb-3" th:action="@{/students}" method="get">
+                <input type="hidden" name="action" value="search" />
+                <input class="form-control me-2" type="search" placeholder="请输入姓名关键字" aria-label="Search" name="keyword" th:value="${param.keyword}" />
+                <button class="btn btn-outline-success" type="submit">查询</button>
+            </form>
+
+            <!-- 功能按钮区 -->
+            <div class="d-flex justify-content-around mb-4">
+                <a href="#" class="btn btn-primary" th:href="@{/students?action=new}">添加学生</a>
+                <a href="#" class="btn btn-success" th:href="@{/students}">学生列表</a>
+                <a href="index.html" class="btn btn-warning">注销</a>
+            </div>
+
+            <!-- 学生信息展示区 -->
+            <h4>学生信息展示</h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">学号</th>
+                    <th scope="col">姓名</th>
+                    <th scope="col">性别</th>
+                    <th scope="col">年龄</th>
+                    <th scope="col">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="student : ${students}">
+                    <td th:text="${student.uid}">学号</td>
+                    <td th:text="${student.uname}">姓名</td>
+                    <td th:text="${student.gender}">性别</td>
+                    <td th:text="${student.uage}">年龄</td>
+                    <td>
+                        <a th:href="@{/students(action='edit', uid=${student.uid})}" class="btn btn-info btn-sm">编辑</a>
+                        <a href="#" class="btn btn-danger btn-sm"
+                           th:onclick="'if(confirm(\'确定删除该学生吗？\')) window.location.href=\'' + @{/students(action='delete', uid=${student.uid})} + '\';return false;'">
+                            删除
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(students)}">
+                    <td colspan="5" class="text-center">没有找到符合条件的学生</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 侧边栏 -->
+        <div class="col-md-4">
+            <div class="list-group">
+                <h4>快速操作</h4>
+                <a href="#" class="list-group-item list-group-item-action" th:href="@{/students}">查看所有学生</a>
+                <a href="#" class="list-group-item list-group-item-action" th:href="@{/students?action=new}">添加新学生</a>
+                <a href="#" class="list-group-item list-group-item-action" th:href="@{/students?action=search}">学生查询</a>
+                <a href="index.html" class="list-group-item list-group-item-action">注销</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 引入 Bootstrap 的 JavaScript 文件 -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>
